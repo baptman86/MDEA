@@ -124,28 +124,28 @@ int main(int argc, char* argv[]) {
     cout << "pas de methode choisie" << endl;
     exit(0);
   }
+  
+  
+  // Input population
+  auto pop = Population(opt->at("-in"));
 
   //output directory
-  std::ostringstream dir;
-  dir << "output-"+opt->at("-in") << "-" << opt->at("-cx") << "-" << opt->at("-dist") << "-" << opt->at("-fitness") << "-" << opt->at("-g") << "-" << opt->at("-m") << "-" << opt->at("-nb");
-  NSGAII::dir = dir.str();
+  if (opt->at("-out") != "")
+    NSGAII::dir = opt->at("-out");
+  else {
+    std::ostringstream dir;
+    dir << "output-"+opt->at("-in") << "-" << opt->at("-cx") << "-" << opt->at("-dist") << "-" << opt->at("-fitness") << "-" << opt->at("-g") << "-" << opt->at("-m") << "-" << opt->at("-nb");
+    NSGAII::dir = dir.str();
+  }
   
   system(("rm -rf "+NSGAII::dir).c_str());
   mkdir(NSGAII::dir.c_str(),0777);
   mkdir((NSGAII::dir+"/jvmconsuption").c_str(),0777);
   mkdir((NSGAII::dir+"/output").c_str(),0777);
   
-  // Input population
-  auto pop = Population(opt->at("-in"));
-
-  // Output data file (use input or default value)
-  if (opt->at("-out") != "")
-    Statistics::outfile = opt->at("-out");
-  else {
-    std::ostringstream oss;
-    oss << NSGAII::dir << "/resultat";
-    Statistics::outfile = oss.str();
-  }
+  std::ostringstream oss;
+  oss << NSGAII::dir << "/stat";
+  Statistics::outfile = oss.str();
 
   // Evaluation of initial population
   if(GAChromosom::getNbModels() != 1)
