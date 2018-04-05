@@ -57,6 +57,10 @@ class NSGAII : public GASimpleGA {
     MINAVG = 0b0100
   };
   /**
+   * Output Directory
+   */
+  static std::string dir;
+  /**
    * Choosed fitness
    */
   static int fitness;

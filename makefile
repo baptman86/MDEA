@@ -19,8 +19,8 @@ ifeq ($(OS),Linux)
 CXXFLAGS = -Wall -Wpedantic -std=c++14 -g -I .
 CXX_LIBS = -lpugixml -lpthread -lm
 else
-CXXFLAGS = -Wall -Wpedantic -std=c++14 -g -I . -I /home/baptiste/Bureau/pugixml-1.8/ 
-CXX_LIBS = -L /home/baptiste/Bureau/pugixml-1.8/ -lpugixml -lpthread -lm
+CXXFLAGS = -Wall -Wpedantic -std=c++14 -g -I . -I ./lib/pugixml-1.8/ 
+CXX_LIBS = -L ./lib/pugixml-1.8/ -lpugixml -lpthread -lm
 endif
 # Unit test config
 

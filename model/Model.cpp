@@ -189,7 +189,8 @@ std::string Model::generateDotFile(int i) {
   //  std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
   dot = fileName;
   //auto t2 = std::chrono::high_resolution_clock::now();
-  auto outfile = "jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  auto outfile = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  
   Logger l(outfile,std::ios_base::app);
   //l<<"dot "<<jvmLaunch<<" "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<"\n";
   return fileName;
@@ -268,6 +269,7 @@ std::tuple<float,float,float> Model::evaluateExtern(Model& m1,
   auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
   auto dot1 = fut1.get();
   auto dot2 = fut2.get();
+  
   auto centrality = 0.0,
     hamming = 0.0,
     levenshtein = 0.0;
@@ -338,7 +340,8 @@ std::tuple<float,float,float> Model::evaluateExtern(Model& m1,
   }
   pclose(in);
   auto t2 = std::chrono::high_resolution_clock::now();  
-  auto outfile = "jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  auto outfile = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  
   Logger l(outfile,std::ios_base::app);
   l<<"ev "<<jvmLaunch<<" "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<"\n";
   return std::make_tuple(hamming,centrality,levenshtein);
@@ -419,7 +422,8 @@ bool Model::isValid() const {
   pclose(in);
   
   //auto t2 = std::chrono::high_resolution_clock::now();  
-  auto outfile = "jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  auto outfile = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  
   Logger l(outfile,std::ios_base::app);
   //l<<"sol "<<jvmLaunch<<" "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<"\n";
   return ret;

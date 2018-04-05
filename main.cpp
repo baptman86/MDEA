@@ -47,12 +47,6 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  /* Clear previous outputs */
-  system("rm output/*");
-  system("rm jvmconsuption/*");
-  mkdir("output",0777);
-  mkdir("jvmconsuption",0777);
-  remove("mutstate");
 
   /* Configure CLI */
   CommandLine cl("mdea");
@@ -68,7 +62,6 @@ int main(int argc, char* argv[]) {
   cl.addOption("-fitness","-fitness <min|avg|minavg|minavgs|dist>",false);
 
   /* Parse CLI input */
-  fprintf(stderr,"Parse CLI input");
   auto opt = cl.parse(argc,argv);
 
   auto pm = 1u; //< Multiplier of population
@@ -78,18 +71,15 @@ int main(int argc, char* argv[]) {
     Chromosom::setNbModels(2);
   else
     Chromosom::setNbModels(std::stof(opt->at("-nb")));
-  fprintf(stderr,"Number of models in an individual\n");
 
   // In the case m = 1, crossover are necessary intra.
   if(Chromosom::getNbModels() == 1) {
     GAChromosom::crossover = GAChromosom::Cross::INTRA;
     pm = 1; // TODO: Do not hardcode this value.
   }
-  fprintf(stderr,"In the case m = 1, crossover are necessary intra\n");
   
   if(opt->at("-cx") == "intra") // Are the crossover intra?
     GAChromosom::crossover = GAChromosom::Cross::INTRA;
-  fprintf(stderr,"Are the crossover intra\n");
 
   // Choice of fitness (default is each distance is a fitness)
   if(opt->at("-fitness") == "min") 
@@ -100,19 +90,16 @@ int main(int argc, char* argv[]) {
     NSGAII::fitness = NSGAII::Fitness::MINAVG;
   if(opt->at("-fitness") == "minavg")
     NSGAII::fitness = NSGAII::Fitness::AVG | NSGAII::Fitness::MIN;
-  fprintf(stderr,"Choice of fitness\n");
 
   // Mutation percentage chance
   auto mut = 0.f;
   if(opt->at("-m") != "")
     mut = std::stof(opt->at("-m"));
-  fprintf(stderr,"Mutation percentage chance\n");
 
   // Number of generations
   NSGAII::maxGen = 100;
   if(opt->at("-g") != "")
     NSGAII::maxGen = std::stof(opt->at("-g"));
-  fprintf(stderr,"Number of generations\n");
   
   // Choice of distance to use
   auto method = opt->at("-dist");
@@ -121,44 +108,50 @@ int main(int argc, char* argv[]) {
     std::string s;
     GAChromosom::method = 0;
     while(std::getline(split,s,'+')) {
-      if(s == "hamming")	
+      if(s == "hamming")
 	GAChromosom::method |= GAChromosom::Method::HAMMING;
-      if(s == "centrality")	
+      if(s == "centrality")
 	GAChromosom::method |= GAChromosom::Method::CENTRALITY;
-      if(s == "levenshtein")	
+      if(s == "levenshtein")
 	GAChromosom::method |= GAChromosom::Method::LEVENSHTEIN;
-      if(s == "smartLevenshtein")	
+      if(s == "smartLevenshtein")
 	GAChromosom::method |= GAChromosom::Method::LEVEXTERN;
-      if(s == "cosine")	
+      if(s == "cosine")
 	GAChromosom::method |= GAChromosom::Method::COSINE;
     }
   }
-  else
-    method = "cosine";
-  fprintf(stderr,"Choice of distance to use\n");
+  else{
+    cout << "pas de methode choisie" << endl;
+    exit(0);
+  }
+
+  //output directory
+  std::ostringstream dir;
+  dir << "output-"+opt->at("-in") << "-" << opt->at("-cx") << "-" << opt->at("-dist") << "-" << opt->at("-fitness") << "-" << opt->at("-g") << "-" << opt->at("-m") << "-" << opt->at("-nb");
+  NSGAII::dir = dir.str();
+  
+  system(("rm -rf "+NSGAII::dir).c_str());
+  mkdir(NSGAII::dir.c_str(),0777);
+  mkdir((NSGAII::dir+"/jvmconsuption").c_str(),0777);
+  mkdir((NSGAII::dir+"/output").c_str(),0777);
   
   // Input population
   auto pop = Population(opt->at("-in"));
-  fprintf(stderr,"Input population");
 
   // Output data file (use input or default value)
   if (opt->at("-out") != "")
     Statistics::outfile = opt->at("-out");
   else {
     std::ostringstream oss;
-    oss << opt->at("-in") << "-p" << pop.size() << "-m" <<
-      GAChromosom::getNbModels() << "-x" << 1 << "-m" << mut << "-" <<
-      method << ".dat";
+    oss << NSGAII::dir << "/resultat";
     Statistics::outfile = oss.str();
   }
-  fprintf(stderr,"Output data file\n");
 
   // Evaluation of initial population
   if(GAChromosom::getNbModels() != 1)
     pop.evaluate();
   else
     pop.popEvaluate();
-  fprintf(stderr,"Evaluation of initial population\n");
   
   // Initialize algorithm
   GAChromosom genome;
@@ -176,30 +169,24 @@ int main(int argc, char* argv[]) {
   params.set(gaNpopulationSize,pop.size());
   params.set(gaNscoreFilename,Statistics::outfile.c_str());
   ga.parameters(params);
-  fprintf(stderr,"Initialize algorithm\n");
 
   // Set selector type (NSGA-II algorithm uses tournament selector)
   ga.selector(GATournamentSelector());
-  fprintf(stderr,"Set selector type\n");
   
   // ga.terminator(GAGeneticAlgorithm::TerminateUponConvergence);
   // ^ Uncomment this line to terminate upon convergence.
 
   // do the evolution
   ga.evolve();
-  fprintf(stderr,"do the evolution\n");
 
   // print out the results
   cout << ga.statistics() << endl;
-  fprintf(stderr,"print out the results\n");
 
   // Print statistics in the outfile
   std::string outfile = Statistics::outfile;
   Logger l(outfile);
   l << ga.extraStatistics();
-  fprintf(stderr,"Print statistics in the outfile\n");
   
   delete opt;
-  fprintf(stderr,"delete\n");
   return 0;
 }

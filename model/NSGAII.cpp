@@ -21,6 +21,7 @@
 #include <chrono>
 
 int NSGAII::fitness = NSGAII::Fitness::AVG;
+std::string NSGAII::dir = "default";
 unsigned int NSGAII::gen = 0;
 unsigned int NSGAII::maxGen = 100;
 
@@ -414,8 +415,7 @@ void NSGAII::step() {
   tMoy += dur;
 
   // Output population
-  std::string outfile = std::string("output/gen")
-    +std::to_string(gen);
+  std::string outfile = NSGAII::dir+std::string("/output/gen")+std::to_string(gen);
   Logger l(outfile);
   l << *popr;
   if(GAChromosom::getNbModels() == 1)
