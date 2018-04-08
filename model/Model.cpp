@@ -188,21 +188,27 @@ std::string Model::generateDotFile(int i) {
   }
   pclose(in);
   //  std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-	std::cout << fileName << std::endl;
-  dot = fileName;
+	//std::cout << fileName << std::endl;
+	std::string outdirGen = NSGAII::dir+"/output/dotgen"+std::to_string(NSGAII::gen);
+	system(("mv "+fileName+" "+outdirGen).c_str());
+	std::string rawfileName = fileName.substr(fileName.find("/"),fileName.length());
+  dot = outdirGen+rawfileName;
   //auto t2 = std::chrono::high_resolution_clock::now();
-  auto outfile = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+  auto outfileChrono = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
   
-  Logger l(outfile,std::ios_base::app);
+  Logger l(outfileChrono,std::ios_base::app);
   //l<<"dot "<<jvmLaunch<<" "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<"\n";
-  return fileName;
+  return dot;
 }
 
-float Model::evaluate(const Model& m1, const Model& m2) {
+float Model::evaluate(Model& m1, Model& m2) {
   return levenshteinDistance(m1,m2);
 }
 
-float Model::levenshteinDistance(const Model& m1, const Model& m2) {
+float Model::levenshteinDistance(Model& m1, Model& m2) {
+	auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
+  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+
   auto g1 = m1.getVal();
   auto g2 = m2.getVal();
   int d[g1->size()][g2->size()];
@@ -236,7 +242,10 @@ float Model::levenshteinDistance(const Model& m1, const Model& m2) {
   return float(d[g1->size()-1][g2->size()-1]);
 }
 
-float Model::cosineDistance(const Model& m1, const Model& m2) {
+float Model::cosineDistance(Model& m1, Model& m2) {
+	auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
+  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+
   auto num = 0.0;
   auto g1 = m1.getVal();
   auto g2 = m2.getVal();

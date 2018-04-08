@@ -142,6 +142,7 @@ int main(int argc, char* argv[]) {
   mkdir(NSGAII::dir.c_str(),0777);
   mkdir((NSGAII::dir+"/jvmconsuption").c_str(),0777);
   mkdir((NSGAII::dir+"/output").c_str(),0777);
+	mkdir((NSGAII::dir+"/output/dotgen"+std::to_string(NSGAII::gen)).c_str(),0777);
   
   std::ostringstream oss;
   oss << NSGAII::dir << "/stat";

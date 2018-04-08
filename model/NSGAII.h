@@ -72,10 +72,6 @@ class NSGAII : public GASimpleGA {
    * Current generation.
    */
   static unsigned int gen;
-	/**
-   * Current chromosome.
-   */
-  static unsigned int chr;
   /* Identity definition for GAlib */
   GADefineIdentity("NSGAII", 288);
   /**
