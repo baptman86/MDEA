@@ -23,6 +23,7 @@
 int NSGAII::fitness = NSGAII::Fitness::AVG;
 std::string NSGAII::dir = "default";
 unsigned int NSGAII::gen = 0;
+unsigned int NSGAII::chr = 0;
 unsigned int NSGAII::maxGen = 100;
 
 NSGAII::NSGAII(const GAPopulation& p, unsigned int pm): GASimpleGA(p), extraStats(), popMult(pm) {
@@ -256,6 +257,7 @@ void NSGAII::clustering(::Population* popr,
 void NSGAII::step() {
   // Initialization of the generation
   gen++;
+	chr = 0;
   auto t1 = std::chrono::high_resolution_clock::now();
   std::cout<<gen;
   std::cout.flush();

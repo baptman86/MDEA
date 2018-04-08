@@ -163,7 +163,7 @@ std::string Model::generateDotFile(int i) {
       //jvmLaunch = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
       first = false;
     }
-    //std::cout<<buff;
+    //std::cout<<buff << std::endl;
     std::string cmp = buff;
     if(mm == "MyJava.ecore") {
       auto pos = cmp.find("filepath -- ");
@@ -184,9 +184,11 @@ std::string Model::generateDotFile(int i) {
 	break;
       }
     }
+	
   }
   pclose(in);
   //  std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+	std::cout << fileName << std::endl;
   dot = fileName;
   //auto t2 = std::chrono::high_resolution_clock::now();
   auto outfile = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
@@ -263,8 +265,7 @@ float Model::cosineDistance(const Model& m1, const Model& m2) {
   return 1-(num/(sqrt(den1)*sqrt(den2)));
 }
 
-std::tuple<float,float,float> Model::evaluateExtern(Model& m1,
-						    Model& m2) {
+std::tuple<float,float,float> Model::evaluateExtern(Model& m1,Model& m2) {
   auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
   auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
   auto dot1 = fut1.get();
