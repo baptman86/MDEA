@@ -277,7 +277,7 @@ void NSGAII::step() {
     auto& mom = popr->select();
     auto& dad = popr->select();
       
-    while(dad.compare(mom)) {
+    while(dad.compare(mom)) {	
       dad = popr->select();
     }
 
@@ -296,8 +296,7 @@ void NSGAII::step() {
       auto sisValid = static_cast<GAChromosom*>(sis)->isValid();
       auto broValid = static_cast<GAChromosom*>(bro)->isValid();
       auto tmend = std::chrono::high_resolution_clock::now();
-      auto dur = std::chrono::
-	duration_cast<std::chrono::milliseconds>(tmend-tm).count();
+      auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(tmend-tm).count();
       tMin = (dur < tMin)?dur:tMin;
       tMax = (dur > tMax)?dur:tMax;
       tMoy += dur;
@@ -325,18 +324,17 @@ void NSGAII::step() {
       auto tm = std::chrono::high_resolution_clock::now();
       auto valid = static_cast<GAChromosom&>(*ind).isValid(); 
       auto tmend = std::chrono::high_resolution_clock::now();
-      auto dur = std::chrono::
-	duration_cast<std::chrono::milliseconds>(tmend-tm).count();
+      auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(tmend-tm).count();
       tMin = (dur < tMin)?dur:tMin;
       tMax = (dur > tMax)?dur:tMax;
       tMoy += dur;
       if(valid) {
-	i++;
-	stats.nummut += mut;
-	popr->add(ind);
+				i++;
+				stats.nummut += mut;
+				popr->add(ind);
       }
       else {
-	mutLost++;
+				mutLost++;
       }
     }
     else {
@@ -416,16 +414,20 @@ void NSGAII::step() {
   tMax = (dur > tMax)?dur:tMax;
   tMoy += dur;
 
+	
+
   // Output population
   std::string outfile = NSGAII::dir+std::string("/output/gen")+std::to_string(gen);
+	
   Logger l(outfile);
-  l << *popr;
-  if(GAChromosom::getNbModels() == 1)
+  if(GAChromosom::getNbModels() == 1){
     l << *res;
+	}
+	l << *popr;
 
   // Output mutation status
   auto t2 = std::chrono::high_resolution_clock::now();  
-  outfile = "mutstate";
+  outfile = NSGAII::dir+std::string("/output/mutstate");
   Logger l2(outfile,std::ios_base::app);
   l2<<gen<<" "<<lost<<" "<<popMult*popSize<<" "<<
     nbMut<<" "<<mutLost<<" "<<

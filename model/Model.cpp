@@ -195,6 +195,9 @@ std::string Model::generateDotFile(int i) {
   dot = outdirGen+rawfileName;
   //auto t2 = std::chrono::high_resolution_clock::now();
   auto outfileChrono = NSGAII::dir+"/jvmconsuption/jvmconsuption"+std::to_string(NSGAII::gen);
+
+	//display of dot file and corresponding values
+	//std::cout << dot << std::endl << *this << std::endl;
   
   Logger l(outfileChrono,std::ios_base::app);
   //l<<"dot "<<jvmLaunch<<" "<<std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()<<"\n";
@@ -206,8 +209,8 @@ float Model::evaluate(Model& m1, Model& m2) {
 }
 
 float Model::levenshteinDistance(Model& m1, Model& m2) {
-	auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
-  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+	std::async(std::launch::async,&Model::generateDotFile,&m1,0);
+  std::async(std::launch::async,&Model::generateDotFile,&m2,1);
 
   auto g1 = m1.getVal();
   auto g2 = m2.getVal();
@@ -275,8 +278,9 @@ float Model::cosineDistance(Model& m1, Model& m2) {
 }
 
 std::tuple<float,float,float> Model::evaluateExtern(Model& m1,Model& m2) {
-  auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
-  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+  std::async(std::launch::async,&Model::generateDotFile,&m1,0);
+  std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+
   auto dot1 = fut1.get();
   auto dot2 = fut2.get();
   

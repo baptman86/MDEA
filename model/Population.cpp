@@ -65,22 +65,21 @@ MatrixPtr Population::popEvaluate(GABoolean flag) {
     for(auto j=i+1;j<this->size();j++) {
       auto& chr2 = static_cast<GAChromosom&>(this->individual(j));
       if(GAChromosom::method & GAChromosom::Method::COSINE) {
-	auto dist = Model::evaluate(chr.getModels()[0],
-				    chr2.getModels()[0]);
-	score->set(i,j,dist);
-	score->set(j,i,dist);
+				auto dist = Model::evaluate(chr.getModels()[0],chr2.getModels()[0]);
+				
+				score->set(i,j,dist);
+				score->set(j,i,dist);
       }
       else {
-	auto dist = Model::evaluateExtern(chr.getModels()[0],
-					  chr2.getModels()[0]);
-	if(GAChromosom::method & GAChromosom::Method::CENTRALITY) {
-	  score->set(i,j,std::get<1>(dist));
-	  score->set(j,i,std::get<1>(dist));
-	}
-	else {
-	  score->set(i,j,std::get<0>(dist));
-	  score->set(j,i,std::get<0>(dist));
-	}
+				auto dist = Model::evaluateExtern(chr.getModels()[0],chr2.getModels()[0]);
+				if(GAChromosom::method & GAChromosom::Method::CENTRALITY) {
+					score->set(i,j,std::get<1>(dist));
+					score->set(j,i,std::get<1>(dist));
+				}
+				else {
+					score->set(i,j,std::get<0>(dist));
+					score->set(j,i,std::get<0>(dist));
+				}
       }
     }
     static_cast<GAGenome>(chr).score(score->lineAverage(i));
@@ -122,6 +121,7 @@ Logger& operator<<(Logger& log, const Population& p) {
     log<<"--------------\n";
     log<<ind<<"\n";
     auto res = ind.score();
+		std::cout << *res[0] << std::endl;
     log<<*res[0]<<"\n";
     log<<*res[1]<<"\n";
     log<<*res[2]<<"\n";
