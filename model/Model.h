@@ -131,7 +131,7 @@ class Model {
    * \param m2 Second model to test.
    * \return The distance between the two models.
    */
-  static float evaluate(Model& m1, Model& m2);
+  static float evaluate(const Model& m1,const Model& m2);
   
   /**
    * Take two models and return an evaluation of the cosine distance between
@@ -140,7 +140,7 @@ class Model {
    * \param m2 Second model to test.
    * \return The cosine distance between the two models.
    */
-  static float cosineDistance(Model& m1, Model& m2);
+  static float cosineDistance(const Model& m1,const Model& m2);
   
   /**
    * Take two models and return an evaluation of the levenshtein distance 
@@ -149,7 +149,7 @@ class Model {
    * \param m2 Second model to test.
    * \return The levenshtein distance between the two models.
    */
-  static float levenshteinDistance(Model& m1, Model& m2);
+  static float levenshteinDistance(const Model& m1,const Model& m2);
 
   /**
    * Check if the Model is a valid model or not.

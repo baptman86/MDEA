@@ -204,11 +204,11 @@ std::string Model::generateDotFile(int i) {
   return dot;
 }
 
-float Model::evaluate(Model& m1, Model& m2) {
+float Model::evaluate(const Model& m1,const Model& m2) {
   return levenshteinDistance(m1,m2);
 }
 
-float Model::levenshteinDistance(Model& m1, Model& m2) {
+float Model::levenshteinDistance(const Model& m1,const Model& m2) {
 
   auto g1 = m1.getVal();
   auto g2 = m2.getVal();
@@ -243,7 +243,7 @@ float Model::levenshteinDistance(Model& m1, Model& m2) {
   return float(d[g1->size()-1][g2->size()-1]);
 }
 
-float Model::cosineDistance(Model& m1, Model& m2) {
+float Model::cosineDistance(const Model& m1, const Model& m2) {
 
   auto num = 0.0;
   auto g1 = m1.getVal();

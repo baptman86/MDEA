@@ -440,7 +440,7 @@ void NSGAII::step() {
   // Each 5 generations, output statistics
   // TODO: Add possibility to change record frequence
   if(!(gen % 5)) {
-    std::string outfile = "e"+Statistics::outfile;
+    std::string outfile = Statistics::outfile;
     Logger l(outfile);
     l << extraStats;
   }
