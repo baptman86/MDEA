@@ -16,6 +16,8 @@
 #include <ga/garandom.h>
 #include <limits>
 #include <stdexcept>
+#include <future>
+#include <cstdio>
 
 /* Constructors */
 
@@ -200,24 +202,35 @@ std::vector<MatrixPtr> GAChromosom::evaluate(GAGenome& g) {
     levextern = std::make_shared<Matrix>(nbModels);
   auto minDist = c.score();
   auto i = 0u;
-  for(auto m1 = std::begin(c.models), end = std::end(c.models);
-      m1 < end; m1++) {
+  for(auto m1 = std::begin(c.models), end = std::end(c.models);m1 < end; m1++) {
     auto j = i + 1;
     for(auto m2 = m1 + 1; m2 < end; m2++) {
       if(*m1 != *m2) {
-	if(GAChromosom::method & GAChromosom::Method::LEVENSHTEIN)
-	  levenshtein->set(i,j,Model::levenshteinDistance(*m1,*m2));
-	if(GAChromosom::method & GAChromosom::Method::COSINE)
-	  cosine->set(i,j,Model::cosineDistance(*m1,*m2));
-	if((GAChromosom::method & GAChromosom::Method::HAMMING) ||
-	   (GAChromosom::method & GAChromosom::Method::CENTRALITY) ||
-	   (GAChromosom::method & GAChromosom::Method::LEVEXTERN)) {
-	  auto res = Model::evaluateExtern(*m1,*m2);
-	  hamming->set(i,j,std::get<0>(res));
-	  centrality->set(i,j,std::get<1>(res));
-	  levextern->set(i,j,std::get<2>(res));
-	}
-	j++;
+				if(GAChromosom::method & GAChromosom::Method::LEVENSHTEIN){
+					//génére les fichiers dot
+					auto fut1 = std::async(std::launch::async,&Model::generateDotFile,m1,0);
+					auto fut2 = std::async(std::launch::async,&Model::generateDotFile,m2,1);
+					levenshtein->set(i,j,Model::levenshteinDistance(*m1,*m2));
+					//attendre la fin de l'exécution des threads avant de passer à la suite
+					fut1.get();
+					fut2.get();
+				}
+				if(GAChromosom::method & GAChromosom::Method::COSINE){
+					//génére les fichiers dot
+					auto fut1 = std::async(std::launch::async,&Model::generateDotFile,m1,0);
+					auto fut2 = std::async(std::launch::async,&Model::generateDotFile,m2,1);
+					cosine->set(i,j,Model::cosineDistance(*m1,*m2));
+					//attendre la fin de l'exécution des threads avant de passer à la suite
+					fut1.get();
+					fut2.get();
+				}
+				if((GAChromosom::method & GAChromosom::Method::HAMMING) ||(GAChromosom::method & GAChromosom::Method::CENTRALITY) ||(GAChromosom::method & GAChromosom::Method::LEVEXTERN)) {
+					auto res = Model::evaluateExtern(*m1,*m2);
+					hamming->set(i,j,std::get<0>(res));
+					centrality->set(i,j,std::get<1>(res));
+					levextern->set(i,j,std::get<2>(res));
+				}
+				j++;
       }
     }
     i++;

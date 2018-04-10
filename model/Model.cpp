@@ -168,20 +168,20 @@ std::string Model::generateDotFile(int i) {
     if(mm == "MyJava.ecore") {
       auto pos = cmp.find("filepath -- ");
       if(pos != std::string::npos) {
-	fileName = cmp.substr(pos+12);
-	pos = fileName.find("pdf");
-	fileName = fileName.substr(0,pos);
-	fileName += "dot";
-	break;
+				fileName = cmp.substr(pos+12);
+				pos = fileName.find("pdf");
+				fileName = fileName.substr(0,pos);
+				fileName += "dot";
+				break;
       }
     }
     else {
       auto pos = cmp.find(" is the generated model");
       if(pos != std::string::npos) {
-	pos = cmp.find("pdf");
-	fileName = cmp.substr(1,pos-1);
-	fileName += "dot";
-	break;
+				pos = cmp.find("pdf");
+				fileName = cmp.substr(1,pos-1);
+				fileName += "dot";
+				break;
       }
     }
 	
@@ -209,8 +209,6 @@ float Model::evaluate(Model& m1, Model& m2) {
 }
 
 float Model::levenshteinDistance(Model& m1, Model& m2) {
-	std::async(std::launch::async,&Model::generateDotFile,&m1,0);
-  std::async(std::launch::async,&Model::generateDotFile,&m2,1);
 
   auto g1 = m1.getVal();
   auto g2 = m2.getVal();
@@ -246,8 +244,6 @@ float Model::levenshteinDistance(Model& m1, Model& m2) {
 }
 
 float Model::cosineDistance(Model& m1, Model& m2) {
-	auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
-  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
 
   auto num = 0.0;
   auto g1 = m1.getVal();
@@ -278,8 +274,8 @@ float Model::cosineDistance(Model& m1, Model& m2) {
 }
 
 std::tuple<float,float,float> Model::evaluateExtern(Model& m1,Model& m2) {
-  std::async(std::launch::async,&Model::generateDotFile,&m1,0);
-  std::async(std::launch::async,&Model::generateDotFile,&m2,1);
+  auto fut1 = std::async(std::launch::async,&Model::generateDotFile,&m1,0);
+  auto fut2 = std::async(std::launch::async,&Model::generateDotFile,&m2,1);
 
   auto dot1 = fut1.get();
   auto dot2 = fut2.get();

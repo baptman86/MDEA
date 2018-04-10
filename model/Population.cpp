@@ -121,7 +121,6 @@ Logger& operator<<(Logger& log, const Population& p) {
     log<<"--------------\n";
     log<<ind<<"\n";
     auto res = ind.score();
-		std::cout << *res[0] << std::endl;
     log<<*res[0]<<"\n";
     log<<*res[1]<<"\n";
     log<<*res[2]<<"\n";
