@@ -1,0 +1,2 @@
+cd ..
+{ time ./mdea -in scaffold -cx intra -dist levenshtein -g 500 -m 0.001 -nb 25 -out "" >> resultat_script/scaffold-intra-levenshtein-dist-500-0.001-25.txt ; } 2> resultat_script/scaffold-intra-levenshtein-dist-500-0.001-25.txt

@@ -1,0 +1,2 @@
+cd ..
+{ time ./mdea -in scaffold -cx intra -dist cosine -g 500 -m 0.01 -nb 2 -out "" >> resultat_script/scaffold-intra-cosine-avg-500-0.01-2.txt ; } 2> resultat_script/scaffold-intra-cosine-avg-500-0.01-2.txt
